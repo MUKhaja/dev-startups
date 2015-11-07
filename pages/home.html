@@ -10,6 +10,7 @@
         <script type="text/javascript" src="../library/jquery/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="../library/jquery/jquery.ui.1.8.20.custom.min.js"></script> 
         <script type="text/javascript">
+            //Document ready    
             $(document).ready(function () {
                 //Add item event
                 $("#addTodoItemFld").on("keypress",function(e){
@@ -22,6 +23,7 @@
                             ItemListContainer.append(ListItem);
                             $(this).val("");
                             showItemsleftInfo();
+                            $(".MarkAllItems").attr("checked", false);
                         }
                     }
                 });
@@ -29,12 +31,15 @@
                 //Check all
                 $(".MarkAllItems").on("change",function(){
                     if($(this).is(":checked")){
-                        $(".markAItem").attr("checked", true);
-                        $(".view-item-lbl").css("text-decoration", "line-through");
+                        $(".addListItem .markAItem").attr("checked", true);
+                        $(".addListItem .view-item-lbl").css("text-decoration", "line-through");
+                        $(".addListItem .todoItem").attr("striked","1");
                     } else {
-                        $(".markAItem").attr("checked", false);
-                        $(".view-item-lbl").css("text-decoration", "none");
+                        $(".addListItem .markAItem").attr("checked", false);
+                        $(".addListItem .view-item-lbl").css("text-decoration", "none");
+                        $(".addListItem .todoItem").attr("striked","0");
                     }
+                    showItemsleftInfo();
                 });
             });
             
@@ -43,28 +48,47 @@
                 if($(obj).is(":checked")){
                     $(obj).attr("checked", true);
                     $(obj).next().css("text-decoration", "line-through");
+                    $(obj).closest('li').attr("striked","1");
                 } else {
                     $(obj).attr("checked", false);
                     $(".MarkAllItems").attr("checked", false);
                     $(obj).next().css("text-decoration", "none");
+                    $(obj).closest('li').attr("striked","0");
                 }
+                showItemsleftInfo();
             }
             
-            //
+            //Show items left info
             function showItemsleftInfo(){
-                var listObj = $(".addListItem li");
+                var listObj = $(".addListItem li[striked!=1]");
                 var listLen = listObj.length
                 if (listLen>1){
                     $(".itemsCountLbl").text(listLen+" items pending.");
                 } else if (listLen==1){
                     $(".itemsCountLbl").text(listLen+" item pending.");
+                } else if (listLen==0){
+                    $(".itemsCountLbl").text("");
                 } 
                 //
                 if (listLen!=0){
                     $(".MarkAllItemsLbl").removeClass("hide");
-                } else{
-                    $(".MarkAllItemsLbl").addClass("hide");
                 }
+                var complItemLen = $(".addListItem li").length-listLen
+                if (complItemLen!=0){
+                    $(".compItemsCountLbl").text("Clear "+complItemLen+" completed items.");
+                } else {
+                    $(".compItemsCountLbl").text("");
+                }
+            }
+            
+            //Remove items done : flag = 1: individual; else all
+            function removeItemFromList(obj,pFlag){
+                if(pFlag==1){
+                    $(obj).closest(".todoItem").remove();
+                } else {
+                    $(".addListItem li[striked=1]").remove();
+                }
+                showItemsleftInfo();
             }
         </script>
         <style type="text/css">
@@ -133,7 +157,10 @@
             <!-- Todo list Items -->
             <ul class="addListItem"></ul>
             <!-- List Item Count Label -->
-            <label class="label label-info itemsCountLbl"></label>
+            <div style="margin-bottom:2px;">
+                <label class="label label-info itemsCountLbl"></label>
+                <label class="label label-important compItemsCountLbl pull-right" onclick="removeItemFromList(this);"></label>
+            </div>
         </div>
         
         <!-- Learn more -->
@@ -153,7 +180,7 @@
                         <input type="checkbox" class="markAItem" onchange="checkAItem(this)" value="1"> 
                         <label style="margin-left:5px;width:650px;" class="view-item-lbl"></label>
                     </label>
-                    <i class="icon-remove-sign pull-right"></i>
+                    <i class="icon-remove-sign pull-right" onclick="removeItemFromList(this,1)"></i>
                 </div>
                 <div class="edit-item form-inline">
                     <input type="text" class="input-block-level edit-item-fld hide">
