@@ -5,24 +5,160 @@
         <link rel="stylesheet" type="text/css" href="../css/jquery-ui-1.8.20.custom.css">
         <link rel="stylesheet" type="text/css" href="../library/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../library/bootstrap/css/bootstrap-responsive.css">
+        <link rel="stylesheet" type="text/css" href="../library/font-awesome-4.4.0/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="../css/custom.css">
         <script type="text/javascript" src="../library/jquery/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="../library/jquery/jquery.ui.1.8.20.custom.min.js"></script> 
         <script type="text/javascript">
             $(document).ready(function () {
+                //Add item event
+                $("#addTodoItemFld").on("keypress",function(e){
+                    if(e.keyCode=="13"){
+                        if($(this).val()!=""){
+                            var ItemListContainer = $(".addListItem");
+                            var ListItem = $(".addItem-template").children().clone();
+                            ListItem.find(".view-item-lbl").text($(this).val());
+                            ListItem.find(".edit-item-fld").val($(this).val());
+                            ItemListContainer.append(ListItem);
+                            $(this).val("");
+                            showItemsleftInfo();
+                        }
+                    }
+                });
                 
+                //Check all
+                $(".MarkAllItems").on("change",function(){
+                    if($(this).is(":checked")){
+                        $(".markAItem").attr("checked", true);
+                        $(".view-item-lbl").css("text-decoration", "line-through");
+                    } else {
+                        $(".markAItem").attr("checked", false);
+                        $(".view-item-lbl").css("text-decoration", "none");
+                    }
+                });
             });
+            
+            //Check item
+            function checkAItem(obj){
+                if($(obj).is(":checked")){
+                    $(obj).attr("checked", true);
+                    $(obj).next().css("text-decoration", "line-through");
+                } else {
+                    $(obj).attr("checked", false);
+                    $(".MarkAllItems").attr("checked", false);
+                    $(obj).next().css("text-decoration", "none");
+                }
+            }
+            
+            //
+            function showItemsleftInfo(){
+                var listObj = $(".addListItem li");
+                var listLen = listObj.length
+                if (listLen>1){
+                    $(".itemsCountLbl").text(listLen+" items pending.");
+                } else if (listLen==1){
+                    $(".itemsCountLbl").text(listLen+" item pending.");
+                } 
+                //
+                if (listLen!=0){
+                    $(".MarkAllItemsLbl").removeClass("hide");
+                } else{
+                    $(".MarkAllItemsLbl").addClass("hide");
+                }
+            }
         </script>
+        <style type="text/css">
+            body {
+                padding-top: 40px;
+                padding-bottom: 40px;
+                background-color: #f5f5f5;
+            }
+            .todoList-container {
+                max-width: 700px;
+                padding: 19px 29px 29px;
+                margin: 0 auto 20px;
+                background-color: #fff;
+                border: 1px solid #e5e5e5;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                     border-radius: 5px;
+                -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                     box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            }
+            .todoList-container .todos-heading,
+            .todoList-container .checkbox {
+                margin-bottom: 10px;
+            }
+            .todoList-container input[type="text"]{
+                font-size: 16px;
+                height: auto;
+                margin-bottom: 15px;
+                padding: 7px 9px;
+            }
+            ul{
+                list-style-type:none;
+                margin-left:-0.5px;
+            }
+    </style>
     </head>
 	<body>
-        <div class="hero-unit">
-            <h1>Todo List</h1>
-            <p>Tagline</p>
-            <p>
-                <a class="btn btn-primary btn-large">
-                Learn more
-                </a>
-            </p>
+        <!-- Nav bar -->
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="brand" href="#"><b>Todo List</b></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav">
+                        <li class="active"><a href="#">Home</a></li>
+                        <li><a href="#about">Learn more</a></li>
+                        </ul>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- todo list container -->
+        <div class="todoList-container">
+            <h2 class="todos-heading">Todos</h2>
+            <input type="text" class="input-block-level" id="addTodoItemFld" placeholder="What needs to be done?">
+            <label class="checkbox MarkAllItemsLbl hide" style="margin-top:-10px;">
+                <input type="checkbox" value="1" class="MarkAllItems"> Mark all as done
+            </label>
+            <!-- Todo list Items -->
+            <ul class="addListItem"></ul>
+            <!-- List Item Count Label -->
+            <label class="label label-info itemsCountLbl"></label>
+        </div>
+        
+        <!-- Learn more -->
+        <div class="Learnmore-info-container"></div>
+        
+        <!-- Author info -->
+        <div class="author-info-container" align="center">
+            <p style="color:#8c8c8c;">Created by</p>
+            <label style="margin-top:-10px;color:#8c8c8c;"><u>Mudassir Ali Khaja</u></label>
+        </div>
+        
+        <!-- Add List Item Template -->
+        <div class="addItem-template hide">
+            <li class="todoItem">
+                <div class="view-item form-inline">
+                    <label class="checkbox" class="markAItemLbl">
+                        <input type="checkbox" class="markAItem" onchange="checkAItem(this)" value="1"> 
+                        <label style="margin-left:5px;width:650px;" class="view-item-lbl"></label>
+                    </label>
+                    <i class="icon-remove-sign pull-right"></i>
+                </div>
+                <div class="edit-item form-inline">
+                    <input type="text" class="input-block-level edit-item-fld hide">
+                </div>
+            </li>
         </div>
 	</body>	
 </html>
