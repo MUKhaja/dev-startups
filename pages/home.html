@@ -8,7 +8,8 @@
         <link rel="stylesheet" type="text/css" href="../library/font-awesome-4.4.0/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="../css/custom.css">
         <script type="text/javascript" src="../library/jquery/jquery-1.8.2.min.js"></script>
-        <script type="text/javascript" src="../library/jquery/jquery.ui.1.8.20.custom.min.js"></script> 
+        <script type="text/javascript" src="../library/jquery/jquery.ui.1.8.20.custom.min.js"></script>
+        <script type="text/javascript" src="../library/bootstrap/js/bootstrap.min.js"></script> 
         <script type="text/javascript">
             //Document ready    
             $(document).ready(function () {
@@ -90,6 +91,18 @@
                 }
                 showItemsleftInfo();
             }
+            
+            //
+            function exportTodoList(){
+                $.ajax({
+                    url: "export.html",
+                    async: false,
+                    success: function (data) {
+                        $(".Export-todolist").html(data)
+                    },
+                    Error: "123"
+                });
+            }
         </script>
         <style type="text/css">
             body {
@@ -140,6 +153,7 @@
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                         <li class="active"><a href="#">Home</a></li>
+                        <li><a href="#" onclick="exportTodoList();">Export</a></li>
                         <li><a href="#about">Learn more</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
@@ -162,6 +176,9 @@
                 <label class="label label-important compItemsCountLbl pull-right" onclick="removeItemFromList(this);"></label>
             </div>
         </div>
+        
+        <!-- export -->
+        <div class="Export-todolist"></div>
         
         <!-- Learn more - tab-->
         <div class="Learnmore-info-container"></div>

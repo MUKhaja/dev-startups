@@ -1,0 +1,29 @@
+<!-- Client Scripts -->
+<script type="text/javascript">
+	$("#exportTodoList-modal").modal('show');
+</script>
+
+<!-- markup -->
+<div class="modal fade hide" id="exportTodoList-modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Export todo List</h3>
+		</div>
+		<div class="modal-body">
+			<div class="row-fluid">
+				<div class="span7">
+					<input type="text" class="input-block-level" placeholder="Email" maxlength="50"/>
+				</div>
+				<div class="span1" align=center>
+					<label style="margin-top:5px"><b>OR</b></label>
+				</div>	
+				<div class="span4">
+					<input type="text" class="input-block-level" placeholder="Phone" maxlength="10"/>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+		<a href="#" class="btn btn-primary" aria-hidden="true" data-dismiss="modal">Send</a>
+		<a href="#" class="btn btn-warning" aria-hidden="true" data-dismiss="modal">Close</a>
+	</div>
+</div>
