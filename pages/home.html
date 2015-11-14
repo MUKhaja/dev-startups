@@ -5,7 +5,6 @@
         <link rel="stylesheet" type="text/css" href="../css/jquery-ui-1.8.20.custom.css">
         <link rel="stylesheet" type="text/css" href="../library/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../library/bootstrap/css/bootstrap-responsive.css">
-        <link rel="stylesheet" type="text/css" href="../library/font-awesome-4.4.0/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="../css/custom.css">
         <script type="text/javascript" src="../library/jquery/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="../library/jquery/jquery.ui.1.8.20.custom.min.js"></script>
@@ -70,7 +69,7 @@
                     $(".itemsCountLbl").text(listLen+" item pending.");
                 } else if (listLen==0){
                     $(".itemsCountLbl").text("");
-                } 
+                }
                 //
                 if (listLen!=0){
                     $(".MarkAllItemsLbl").removeClass("hide");
@@ -94,7 +93,7 @@
             }
             
             //
-            function exportTodoList(){
+            function exportTodoListPopup(){
                 $.ajax({
                     url: "export.html",
                     async: false,
@@ -136,7 +135,6 @@
             }
             ul{
                 list-style-type:none;
-
             } 
     </style>
     </head>
@@ -154,7 +152,7 @@
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                         <li class="active"><a href="#">Home</a></li>
-                        <li><a href="#" onclick="exportTodoList();">Export</a></li>
+                        <li><a href="#" onclick="exportTodoListPopup();">Export</a></li>
                         <li><a href="#about">Learn more</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
@@ -192,10 +190,10 @@
         <!-- Add List Item Template -->
         <div class="addItem-template hide">
             <li class="todoItem">
-                <div class="view-item form-inline">
+                <div class="view-item form-inline" style="margin-left:-25px;">
                     <label class="checkbox" class="markAItemLbl">
                         <input type="checkbox" class="markAItem" onchange="checkAItem(this)" value="1"> 
-                        <label style="margin-left:5px;width:650px;" class="view-item-lbl"></label>
+                        <label style="margin-left:5px;width:620px;" class="view-item-lbl"></label>
                     </label>
                     <i class="icon-remove-sign pull-right" onclick="removeItemFromList(this,1)"></i>
                 </div>

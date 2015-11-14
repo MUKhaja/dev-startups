@@ -1,29 +1,60 @@
 <!-- Client Scripts -->
 <script type="text/javascript">
 	$("#exportTodoList-modal").modal('show');
+	
+	function exportTodoList(){
+		var msgContent = buildMsgContent();
+		if (msgContent!="")
+		{
+			var posting = $.post("../php/server-script.php",{
+				list_data : msgContent,
+			});
+			posting.done(function(data){
+				alert(data);
+			});
+			posting.fail(function(){
+				
+			});
+		} else {
+			alert("No data available to export.");
+			return false;
+		}
+	}
+	//
+	function buildMsgContent(){
+		var lblMsg = "";
+		$(".addListItem li[striked!=1]").each(function(){
+			if (lblMsg==""){
+				lblMsg = lblMsg + "  -" +$(this).find(".view-item-lbl").text();
+			} else{
+				lblMsg = lblMsg + "\n-"+$(this).find(".view-item-lbl").text();
+			}
+		});
+		return lblMsg;
+	}
 </script> 
 
 <!-- markup -->
 <div class="modal fade hide" id="exportTodoList-modal">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		<h3>Export todo List</h3>
+		<h3>Export todo List Via</h3>
 		</div>
 		<div class="modal-body">
 			<div class="row-fluid">
 				<div class="span7">
-					<input type="text" class="input-block-level" placeholder="Email" maxlength="50"/>
+					<input type="text" class="input-block-level emailFld" placeholder="Email" maxlength="50"/>
 				</div>
 				<div class="span1" align=center>
 					<label style="margin-top:5px"><b>OR</b></label>
 				</div>	
 				<div class="span4">
-					<input type="text" class="input-block-level" placeholder="Phone" maxlength="10"/>
+					<input type="text" class="input-block-level phoneFld" placeholder="Phone" maxlength="10"/>
 				</div>
 			</div>
 		</div>
 		<div class="modal-footer">
-		<a href="#" class="btn btn-primary" aria-hidden="true" data-dismiss="modal">Send</a>
+		<a href="#" class="btn btn-primary" aria-hidden="true" data-dismiss="modal" onclick="exportTodoList();">Send</a>
 		<a href="#" class="btn btn-warning" aria-hidden="true" data-dismiss="modal">Close</a>
 	</div>
 </div>
