@@ -1,0 +1,77 @@
+<script type="text/javascript">
+    //Document ready    
+    $(document).ready(function () {
+        //Add item event
+        $("#addTodoItemBtn").on("click",function(e){
+            if($("#addTodoItemFld").val()!=""){
+                var ItemListContainer = $(".addListItem");
+                var ListItem = $(".addItem-template").children().clone();
+                ListItem.find(".view-item-lbl").text($("#addTodoItemFld").val());
+                ListItem.find(".view-item-date-lbl").text($("#datepicker").val());
+                ListItem.find(".edit-item-fld").val($(this).val());
+                ItemListContainer.append(ListItem);
+                $("#addTodoItemFld,#datepicker").val("");
+                showItemsleftInfo();
+                $("#addTodoItemFld").focus();
+                $(".MarkAllItems").attr("checked", false);
+            } else {
+                $(".alert-error").removeClass("hide");
+    			setTimeout(function(){
+                        $(".alert-error").addClass("hide");
+                }, 3000);
+            }
+        });
+        
+        //Check all
+        $(".MarkAllItems").on("change",function(){
+            if($(this).is(":checked")){
+                $(".addListItem .markAItem").attr("checked", true);
+                $(".addListItem .view-item-lbl").css("text-decoration", "line-through");
+                $(".addListItem .view-item-date-lbl").css("text-decoration", "line-through");
+                $(".addListItem .todoItem").attr("striked","1");
+            } else {
+                $(".addListItem .markAItem").attr("checked", false);
+                $(".addListItem .view-item-lbl").css("text-decoration", "none");
+                $(".addListItem .view-item-date-lbl").css("text-decoration", "none");
+                $(".addListItem .todoItem").attr("striked","0");
+            }
+            showItemsleftInfo();
+        });
+        
+        //
+        $("#datepicker").datepicker({ minDate: 0});
+    });
+</script>
+<div class="show-TodoCategory">
+	<h2 class="todos-heading todo-CategoryHeading" style="margin-left:5px;"></h2>
+    <table>
+        <tr>
+            <td width="90%"><input type="text" class="input-block-level" id="addTodoItemFld" placeholder="What needs to be done?" style="margin-left:5px;"></td>
+            <td width="10%" style="padding-left:0px;"><input type="text" class="input-block-level input-mini" id="datepicker" placeholder="Schedule" style="width:110px;margin-left:5px;"></td>
+        </tr>
+        <tr>
+            <td width="100%" colspan="2">
+                <div class="alert alert-error hide">
+            	  	<strong>Warning!</strong> Please enter your task.
+            	</div>
+            </td>
+        </tr>
+        <tr>
+            <td width="80%" colspan="2">
+                <button class="btn btn-inverse" id="addTodoItemBtn" style="margin-left:5px;">Add Task</button>
+            </td>
+        </tr>
+    </table>
+    <hr/>
+    <label class="checkbox MarkAllItemsLbl hide" style="margin-top:10px;margin-left:10px;">
+        <input type="checkbox" value="1" class="MarkAllItems"> Mark all as done
+    </label>
+    
+    <!-- Todo list Items -->
+    <ul class="addListItem"></ul>
+    <!-- List Item Count Label -->
+    <div style="margin-bottom:2px;">
+        <label class="label label-info itemsCountLbl" style="margin-left:10px;"></label>
+        <label class="label label-important compItemsCountLbl pull-right" onclick="removeItemFromList(this);" style="margin-right:10px;"></label>
+    </div>
+</div>	

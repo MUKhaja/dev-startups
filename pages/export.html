@@ -1,60 +1,225 @@
-<!-- Client Scripts -->
-<script type="text/javascript">
-	$("#exportTodoList-modal").modal('show');
-	
-	function exportTodoList(){
-		var msgContent = buildMsgContent();
-		if (msgContent!="")
-		{
-			var posting = $.post("../php/server-script.php",{
-				list_data : msgContent,
-			});
-			posting.done(function(data){
-				alert(data);
-			});
-			posting.fail(function(){
-				
-			});
-		} else {
-			alert("No data available to export.");
-			return false;
-		}
-	}
-	//
-	function buildMsgContent(){
-		var lblMsg = "";
-		$(".addListItem li[striked!=1]").each(function(){
-			if (lblMsg==""){
-				lblMsg = lblMsg + "  -" +$(this).find(".view-item-lbl").text();
-			} else{
-				lblMsg = lblMsg + "\n-"+$(this).find(".view-item-lbl").text();
-			}
-		});
-		return lblMsg;
-	}
-</script> 
-
-<!-- markup -->
-<div class="modal fade hide" id="exportTodoList-modal">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		<h3>Export todo List Via</h3>
-		</div>
-		<div class="modal-body">
-			<div class="row-fluid">
-				<div class="span7">
-					<input type="text" class="input-block-level emailFld" placeholder="Email" maxlength="50"/>
-				</div>
-				<div class="span1" align=center>
-					<label style="margin-top:5px"><b>OR</b></label>
-				</div>	
-				<div class="span4">
-					<input type="text" class="input-block-level phoneFld" placeholder="Phone" maxlength="10"/>
-				</div>
-			</div>
-		</div>
-		<div class="modal-footer">
-		<a href="#" class="btn btn-primary" aria-hidden="true" data-dismiss="modal" onclick="exportTodoList();">Send</a>
-		<a href="#" class="btn btn-warning" aria-hidden="true" data-dismiss="modal">Close</a>
-	</div>
-</div>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Todo List</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="../css/jquery-ui-1.8.20.custom.css">
+        <link rel="stylesheet" type="text/css" href="../library/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../library/bootstrap/css/bootstrap-responsive.css">
+        <link rel="stylesheet" type="text/css" href="../css/custom.css">
+        <script type="text/javascript" src="../library/jquery/jquery-1.8.2.min.js"></script>
+        <script type="text/javascript" src="../library/jquery/jquery.ui.1.8.20.custom.min.js"></script>
+        <script type="text/javascript" src="../library/bootstrap/js/bootstrap.min.js"></script> 
+        <script type="text/javascript" src="../library/jquery/jquery.ui.1.8.20.custom.min.js"></script> 
+        <script type="text/javascript">
+            //Document ready    
+            $(document).ready(function () {
+                //Add item event
+                $("#addTodoItemFld").on("keypress",function(e){
+                    if(e.keyCode=="13"){
+                        if($(this).val()!=""){
+                            var ItemListContainer = $(".addListItem");
+                            var ListItem = $(".addItem-template").children().clone();
+                            ListItem.find(".view-item-lbl").text($(this).val());
+                            ListItem.find(".edit-item-fld").val($(this).val());
+                            ItemListContainer.append(ListItem);
+                            $(this).val("");
+                            showItemsleftInfo();
+                            $(".MarkAllItems").attr("checked", false);
+                        }
+                    }
+                });
+                
+                //Check all
+                $(".MarkAllItems").on("change",function(){
+                    if($(this).is(":checked")){
+                        $(".addListItem .markAItem").attr("checked", true);
+                        $(".addListItem .view-item-lbl").css("text-decoration", "line-through");
+                        $(".addListItem .todoItem").attr("striked","1");
+                    } else {
+                        $(".addListItem .markAItem").attr("checked", false);
+                        $(".addListItem .view-item-lbl").css("text-decoration", "none");
+                        $(".addListItem .todoItem").attr("striked","0");
+                    }
+                    showItemsleftInfo();
+                });
+            });
+            
+            //Check item
+            function checkAItem(obj){
+                if($(obj).is(":checked")){
+                    $(obj).attr("checked", true);
+                    $(obj).next().css("text-decoration", "line-through");
+                    $(obj).closest('li').attr("striked","1");
+                } else {
+                    $(obj).attr("checked", false);
+                    $(".MarkAllItems").attr("checked", false);
+                    $(obj).next().css("text-decoration", "none");
+                    $(obj).closest('li').attr("striked","0");
+                }
+                showItemsleftInfo();
+            }
+            
+            //Show items left info
+            function showItemsleftInfo(){
+                var listObj = $(".addListItem li[striked!=1]");
+                var listLen = listObj.length
+                if (listLen>1){
+                    $(".itemsCountLbl").text(listLen+" items pending.");
+                } else if (listLen==1){
+                    $(".itemsCountLbl").text(listLen+" item pending.");
+                } else if (listLen==0){
+                    $(".itemsCountLbl").text("");
+                }
+                //
+                if (listLen!=0){
+                    $(".MarkAllItemsLbl").removeClass("hide");
+                }
+                var complItemLen = $(".addListItem li").length-listLen
+                if (complItemLen!=0){
+                    $(".compItemsCountLbl").text("Clear "+complItemLen+" completed items.");
+                } else {
+                    $(".compItemsCountLbl").text("");
+                }
+            }
+            
+            //Remove items done : flag = 1: individual; else all
+            function removeItemFromList(obj,pFlag){
+                if(pFlag==1){
+                    $(obj).closest(".todoItem").remove();
+                } else {
+                    $(".addListItem li[striked=1]").remove();
+                }
+                showItemsleftInfo();
+            }
+            
+            //
+            function exportTodoListPopup(){
+                $.ajax({
+                    url: "login.html",
+                    async: false,
+                    success: function (data) {
+                        $(".Export-todolist").html(data)
+                    },
+                    Error: "123"
+                });
+            }
+        </script>
+        <style type="text/css">
+            body {
+                padding-top: 40px;
+                padding-bottom: 40px;
+                background-color: #f5f5f5;
+            }
+            .todoList-container {
+                max-width: 700px;
+                padding: 19px 29px 29px;
+                margin: 0 auto 20px;
+                background-color: #fff;
+                border: 1px solid #e5e5e5;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                     border-radius: 5px;
+                -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                     box-shadow: 0 1px 2px rgba(0,0,0,.05);
+            }
+            .todoList-container .todos-heading,
+            .todoList-container .checkbox {
+                margin-bottom: 10px;
+            }
+            .todoList-container input[type="text"]{
+                font-size: 16px;
+                height: auto;
+                margin-bottom: 15px;
+                padding: 7px 9px;
+            }
+            ul{
+                list-style-type:none;
+            }
+            
+            @media (max-width: 980px) {
+                /* Enable use of floated navbar text */
+                .navbar-text.pull-right {
+                  float: none;
+                  padding-left: 5px;
+                  padding-right: 5px;
+                }
+                
+                .navbar-fixed-top, .navbar-fixed-bottom{
+                    position: absolute !important;
+                }
+            } 
+          
+    </style>
+    </head>
+	<body>
+        <!-- Nav bar -->
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="brand" href="#"><b>Todo List</b></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav">
+                            <li class="active"><a href="#">Home</a></li>
+                            <li><a href="#about">Learn more</a></li>
+                        </ul>
+                        <ul class="nav pull-right">
+                            <li><a href="#" onclick="exportTodoListPopup();">Login</a></li>
+                            <li><a href="#"><b>Sign up</b></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        <!-- todo list container -->
+        <div class="container-fluid todoList-container">
+            <h2 class="todos-heading">Todos</h2>
+            <input type="text" class="input-block-level" id="addTodoItemFld" placeholder="What needs to be done?">
+            <label class="checkbox MarkAllItemsLbl hide" style="margin-top:-10px;">
+                <input type="checkbox" value="1" class="MarkAllItems"> Mark all as done
+            </label>
+            <!-- Todo list Items -->
+            <ul class="addListItem"></ul>
+            <!-- List Item Count Label -->
+            <div style="margin-bottom:2px;">
+                <label class="label label-info itemsCountLbl"></label>
+                <label class="label label-important compItemsCountLbl pull-right" onclick="removeItemFromList(this);"></label>
+            </div>
+        </div>
+        <!-- export -->
+        <div class="Export-todolist"></div>
+        
+        <!-- Learn more - tab-->
+        <div class="Learnmore-info-container"></div>
+        
+        <!-- Author info -->
+        <div class="author-info-container" align="center">
+            <p style="color:#8c8c8c;">Created by</p>
+            <label style="margin-top:-10px;color:#8c8c8c;"><u>Mudassir Ali Khaja</u></label>
+        </div>
+        
+        <!-- Add List Item Template -->
+        <div class="addItem-template hide">
+            <li class="todoItem">
+                <div class="view-item form-inline" style="margin-left:-25px;">
+                    <label class="checkbox" class="markAItemLbl">
+                        <input type="checkbox" class="markAItem" onchange="checkAItem(this)" value="1"> 
+                        <label style="margin-left:5px;width:620px;" class="view-item-lbl"></label>
+                    </label>
+                    <i class="icon-remove-sign pull-right" onclick="removeItemFromList(this,1)"></i>
+                </div>
+                <div class="edit-item form-inline">
+                    <input type="text" class="input-block-level edit-item-fld hide">
+                </div>
+            </li>
+        </div>
+	</body>	
+</html>
