@@ -1,128 +1,119 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="utf-8">
         <title>Todo List</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="../css/jquery-ui-1.8.20.custom.css">
         <link rel="stylesheet" type="text/css" href="../library/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../library/bootstrap/css/bootstrap-responsive.css">
-        <link rel="stylesheet" type="text/css" href="../css/custom.css">
         <script type="text/javascript" src="../library/jquery/jquery-1.8.2.min.js"></script>
-        <script type="text/javascript" src="../library/jquery/jquery.ui.1.8.20.custom.min.js"></script>
         <script type="text/javascript" src="../library/bootstrap/js/bootstrap.min.js"></script> 
         <script type="text/javascript" src="../library/jquery/jquery.ui.1.8.20.custom.min.js"></script> 
         <script type="text/javascript">
             //Document ready    
             $(document).ready(function () {
-                //Add item event
-                $("#addTodoItemFld").on("keypress",function(e){
-                    if(e.keyCode=="13"){
-                        if($(this).val()!=""){
-                            var ItemListContainer = $(".addListItem");
-                            var ListItem = $(".addItem-template").children().clone();
-                            ListItem.find(".view-item-lbl").text($(this).val());
-                            ListItem.find(".edit-item-fld").val($(this).val());
-                            ItemListContainer.append(ListItem);
-                            $(this).val("");
-                            showItemsleftInfo();
-                            $(".MarkAllItems").attr("checked", false);
-                        }
-                    }
-                });
-                
-                //Check all
-                $(".MarkAllItems").on("change",function(){
-                    if($(this).is(":checked")){
-                        $(".addListItem .markAItem").attr("checked", true);
-                        $(".addListItem .view-item-lbl").css("text-decoration", "line-through");
-                        $(".addListItem .todoItem").attr("striked","1");
-                    } else {
-                        $(".addListItem .markAItem").attr("checked", false);
-                        $(".addListItem .view-item-lbl").css("text-decoration", "none");
-                        $(".addListItem .todoItem").attr("striked","0");
-                    }
-                    showItemsleftInfo();
-                });
+                $(".todoList-container").css("height",$(document).height()-95);
             });
             
-            //Check item
-            function checkAItem(obj){
-                if($(obj).is(":checked")){
-                    $(obj).attr("checked", true);
-                    $(obj).next().css("text-decoration", "line-through");
-                    $(obj).closest('li').attr("striked","1");
-                } else {
-                    $(obj).attr("checked", false);
-                    $(".MarkAllItems").attr("checked", false);
-                    $(obj).next().css("text-decoration", "none");
-                    $(obj).closest('li').attr("striked","0");
-                }
-                showItemsleftInfo();
-            }
-            
-            //Show items left info
-            function showItemsleftInfo(){
-                var listObj = $(".addListItem li[striked!=1]");
-                var listLen = listObj.length
-                if (listLen>1){
-                    $(".itemsCountLbl").text(listLen+" items pending.");
-                } else if (listLen==1){
-                    $(".itemsCountLbl").text(listLen+" item pending.");
-                } else if (listLen==0){
-                    $(".itemsCountLbl").text("");
-                }
-                //
-                if (listLen!=0){
-                    $(".MarkAllItemsLbl").removeClass("hide");
-                }
-                var complItemLen = $(".addListItem li").length-listLen
-                if (complItemLen!=0){
-                    $(".compItemsCountLbl").text("Clear "+complItemLen+" completed items.");
-                } else {
-                    $(".compItemsCountLbl").text("");
-                }
-            }
-            
-            //Remove items done : flag = 1: individual; else all
-            function removeItemFromList(obj,pFlag){
-                if(pFlag==1){
-                    $(obj).closest(".todoItem").remove();
-                } else {
-                    $(".addListItem li[striked=1]").remove();
-                }
-                showItemsleftInfo();
-            }
-            
             //
-            function exportTodoListPopup(){
+            function goToLoginPgae(){
+                $(".signuppage-container").empty();
                 $.ajax({
-                    url: "export.html",
+                    url: "todologin.html",
                     async: false,
                     success: function (data) {
-                        $(".Export-todolist").html(data)
+                        $(".loginpage-container").html(data)
                     },
                     Error: "123"
                 });
             }
+            
+            //
+            function goToLogSignupPgae(){
+                 $(".loginpage-container").empty();
+                $.ajax({
+                    url: "todosignup.html",
+                    async: false,
+                    success: function (data) {
+                        $(".signuppage-container").html(data)
+                    },
+                    Error: "123"
+                });
+            }
+            
+            //
+            function goToTodoItemsPgae(){
+                $("#MainProjectTitle").attr("loggedIn","1");
+                $(".todoList-landingpage-container").addClass("hide");
+                $.ajax({
+                    url: "todoitems.html",
+                    async: false,
+                    success: function (data) {
+                        $(".todoList-data-container").html(data)
+                        $(".afterAccess").removeClass("hide");
+                        $(".beforeAccess").addClass("hide");
+                    },
+                    Error: "123"
+                });
+            } 
+            
+            //
+            function goToLearnMore()
+            {
+                $(".todoList-landingpage-container").addClass("hide");
+                $.ajax({
+                    url: "learnmore.html",
+                    async: false,
+                    success: function (data) {
+                        $(".todoList-data-container").html(data)
+                    },
+                    Error: "123"
+                });
+            }
+           
+            //
+            function goToMainPage(obj){
+                if($(obj).attr("loggedIn")=="0")
+                {
+                    $(".todoList-landingpage-container").removeClass("hide");   
+                    $(".todoList-data-container").empty();
+                }
+            }
+            
+            //
+            function doSignOut(){
+                $("#MainProjectTitle").attr("loggedIn","0");
+                $(".alert-success").removeClass("hide");
+                $(".todoList-landingpage-container").removeClass("hide");   
+                $(".todoList-data-container").empty();
+                $(".afterAccess").addClass("hide");
+                $(".beforeAccess").removeClass("hide"); 
+                setTimeout(function(){
+                    $(".alert-success").addClass("hide");
+                }, 3000);
+            }                     
         </script>
         <style type="text/css">
             body {
                 padding-top: 40px;
-                padding-bottom: 40px;
-                background-color: #f5f5f5;
+                padding-bottom: 40px; 
             }
+            
             .todoList-container {
-                max-width: 700px;
+                max-width: 100%;
                 padding: 19px 29px 29px;
                 margin: 0 auto 20px;
-                background-color: #fff;
-                border: 1px solid #e5e5e5;
+                background:transparent;
                 -webkit-border-radius: 5px;
                 -moz-border-radius: 5px;
                      border-radius: 5px;
                 -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
                 -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
                      box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                background-color: #f5f5f5;     
             }
+            
             .todoList-container .todos-heading,
             .todoList-container .checkbox {
                 margin-bottom: 10px;
@@ -135,7 +126,24 @@
             }
             ul{
                 list-style-type:none;
-            } 
+            }
+            
+            @media (max-width: 980px) {
+                /* Enable use of floated navbar text */
+                .navbar-text.pull-right {
+                  float: none;
+                  padding-left: 5px;
+                  padding-right: 5px;
+                }
+                
+                .navbar-fixed-top, .navbar-fixed-bottom{
+                    position: absolute !important;
+                }
+            }
+            
+            .fldVerticalSpacer{
+	            margin-top: 5px;
+            }
     </style>
     </head>
 	<body>
@@ -148,59 +156,54 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="brand" href="#"><b>Todo List</b></a>
+                    <a class="brand" id="MainProjectTitle" loggedIn="0" href="#" style="margin-left:5%;" onclick="goToMainPage(this)"><b>Todo List</b></a>
                     <div class="nav-collapse collapse">
-                        <ul class="nav">
-                        <li class="active"><a href="#">Home</a></li>
-                        <li><a href="#" onclick="exportTodoListPopup();">Export</a></li>
-                        <li><a href="#about">Learn more</a></li>
+                        <ul class="nav pull-right" style="margin-right:5%;">                          
+                            <li class="afterAccess hide dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <b>Guest </b><b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">My account</a></li>
+                                    <li><a href="#">Settings</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#" onclick="doSignOut();">Logout</a></li>
+                                </ul>
+                            </li>
+                            <li class="beforeAccess"><a href="#" onclick="goToLoginPgae();"><b>Login</b></a></li>
+                            <li class="beforeAccess"><a href="#" onclick="goToLogSignupPgae();"><b>Sign up</b></a></li>
                         </ul>
-                    </div><!--/.nav-collapse -->
+                    </div>
                 </div>
             </div>
         </div>
         
-        <!-- todo list container -->
-        <div class="todoList-container">
-            <h2 class="todos-heading">Todos</h2>
-            <input type="text" class="input-block-level" id="addTodoItemFld" placeholder="What needs to be done?">
-            <label class="checkbox MarkAllItemsLbl hide" style="margin-top:-10px;">
-                <input type="checkbox" value="1" class="MarkAllItems"> Mark all as done
-            </label>
-            <!-- Todo list Items -->
-            <ul class="addListItem"></ul>
-            <!-- List Item Count Label -->
-            <div style="margin-bottom:2px;">
-                <label class="label label-info itemsCountLbl"></label>
-                <label class="label label-important compItemsCountLbl pull-right" onclick="removeItemFromList(this);"></label>
+       <!-- todo list container -->
+        <div class="container-fluid todoList-container">
+            <div class="alert alert-success hide">
+		  	    <strong>Heads up!</strong> Your are successfully logged out.
+		    </div>
+            <div class="page-header todoList-landingpage-container" style="margin-left:8%;margin-top:8%;">
+                <h1>Your Work, <br/>On The Way To Success.</h1>
+                <p style="font-size: 17px;"> Welcome to Todo List. Things to be done in less time.
+                Manage tasks and projects anywhere with Todoist. <br/> At home. At school. At work. Online. Offline.</p>
+                
+                <br/>
+                <p><a class="btn btn-inverse btn-large" onclick="goToLearnMore();">Learn more</a></p>
             </div>
+            <div class="todoList-data-container" style="margin-left:8%;"></div>
         </div>
-        <!-- export -->
-        <div class="Export-todolist"></div>
+            
+        <!-- Login Page -->
+        <div class="loginpage-container"></div>
         
-        <!-- Learn more - tab-->
-        <div class="Learnmore-info-container"></div>
+        <!-- Signup Page -->
+        <div class="signuppage-container"></div>
         
         <!-- Author info -->
-        <div class="author-info-container" align="center">
+        <div class="author-info-container" align="center" >
             <p style="color:#8c8c8c;">Created by</p>
             <label style="margin-top:-10px;color:#8c8c8c;"><u>Mudassir Ali Khaja</u></label>
-        </div>
-        
-        <!-- Add List Item Template -->
-        <div class="addItem-template hide">
-            <li class="todoItem">
-                <div class="view-item form-inline" style="margin-left:-25px;">
-                    <label class="checkbox" class="markAItemLbl">
-                        <input type="checkbox" class="markAItem" onchange="checkAItem(this)" value="1"> 
-                        <label style="margin-left:5px;width:620px;" class="view-item-lbl"></label>
-                    </label>
-                    <i class="icon-remove-sign pull-right" onclick="removeItemFromList(this,1)"></i>
-                </div>
-                <div class="edit-item form-inline">
-                    <input type="text" class="input-block-level edit-item-fld hide">
-                </div>
-            </li>
         </div>
 	</body>	
 </html>

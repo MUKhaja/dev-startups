@@ -1,0 +1,47 @@
+<!-- Client Scripts -->
+<script type="text/javascript">
+	$("#loginTodoList-modal").modal('show'); 
+	//
+    function doLogin()
+	{
+		var emailId = $(".loginpage-container").find("#loginEmail").val();
+		var password1 = $(".loginpage-container").find("#loginPassword").val();
+        if((emailId=="guest")&&(password1=="guest"))
+		{
+        	goToTodoItemsPgae();
+			$("#loginTodoList-modal").modal('hide'); 
+		}else{
+			$(".alert-error").removeClass("hide");
+			setTimeout(function(){
+                    $(".alert-error").addClass("hide");
+            }, 3000);
+		}
+	}  
+</script> 
+
+<!-- markup -->
+<div class="modal fade hide" id="loginTodoList-modal">
+	<div class="modal-header" align="center">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Please Login</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-error hide">
+		  	<strong>Warning!</strong> Please use 'guest' in all fields to login.
+		</div>
+		<div class="row-fluid">
+			<div class="span2"></div>
+			<div class="span8">
+				<div class="form-signin">
+					<label><b>Email Address</b></label>
+					<input type="text" class="input-block-level" id="loginEmail" placeholder="Email Address">
+					<label><b>Password</b></label>
+					<input type="password" class="input-block-level" id="loginPassword" placeholder="Password">
+					<button class="btn btn-inverse input-block-level fldVerticalSpacer" id="LoginBtn" onclick="doLogin();"><b>Log in</b></button>
+				</div>
+			</div>	
+			<div class="span2"></div>	
+		</div>
+	</div>
+	<div class="modal-footer"></div>
+</div>

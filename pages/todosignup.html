@@ -1,0 +1,56 @@
+<!-- Client Scripts -->
+<script type="text/javascript">
+	$("#signupTodoList-modal").modal('show');
+	
+	//
+    function doSignUp()
+	{
+		var yourName = $(".signuppage-container").find("#SignUpUserName").val();
+		var emailId = $(".signuppage-container").find("#SignUpEmail").val();
+		var password1 = $(".signuppage-container").find("#SignUpPassword").val();
+        if((yourName=="guest")&&(emailId=="guest")&&(password1=="guest"))
+		{
+        	goToTodoItemsPgae();
+			$("#signupTodoList-modal").modal('hide'); 
+		}else{
+			$(".alert-error").removeClass("hide");
+			setTimeout(function(){
+                    $(".alert-error").addClass("hide");
+            }, 3000);
+		}
+	}
+</script>
+<style type="text/css">
+.fldVerticalSpacer{
+	margin-top: 5px;
+}
+</style> 
+
+<!-- markup -->
+<div class="modal fade hide" id="signupTodoList-modal">
+	<div class="modal-header" align="center">
+		<h3>Sign up</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-error hide">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		  	<strong>Warning!</strong> Please use 'guest' in all fields to create an account.
+		</div>
+		<div class="row-fluid">
+			<div class="span2"></div>
+			<div class="span8 ">
+				<div class="form-signup">
+					<label><b>Your Name</b></label>
+					<input type="text" class="input-block-level" placeholder="Your Name" id="SignUpUserName">
+					<label><b>Email Address</b></label>
+					<input type="text" class="input-block-level" placeholder="Email Address" id="SignUpEmail">
+					<label><b>Password</b></label>
+					<input type="password" class="input-block-level" placeholder="Password" id="SignUpPassword">
+					<button class="btn btn-inverse input-block-level fldVerticalSpacer" id="CreateMyAccountBtn" onclick="doSignUp();"><b>Create My Account</b></button>
+				</div>
+			</div>	
+			<div class="span2"></div>	
+		</div>
+	</div>
+	<div class="modal-footer"></div>
+</div>
